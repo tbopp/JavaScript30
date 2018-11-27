@@ -58,15 +58,36 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
-  window.addEventListener('keydown', (e) => {
-    const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
-    const key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
+  window.addEventListener('keydown', (keyEvent) => {
+    // Queries the document for an audio element with matching data-key attribute, which is being supplied by the event listener call-back function.
+    const audio = document.querySelector(`audio[data-key="${keyEvent.keyCode}"]`);
+    
+    // Queries the document for an key class element with matching data-key attribute, which is being supplied by the event listener call-back function.
+    const key = document.querySelector(`.key[data-key="${keyEvent.keyCode}"]`);
+
+    // If no audio, stop the function from running.
     if (!audio) return;
+
+    // If audio is found, force the cuttrentTime of the audio back to 0 to allow for repeated, instantaneous playback on keydown.
     audio.currentTime = 0;
+
+    // Play the audio.
     audio.play();
+    
+    // Add class to apply CSS transition effects while audio is playing.
+    key.classList.add('playing');
+
+    // Console.log the information to verify and monitor event listening actions.
     console.log(audio);
     console.log(key);
   });
+
+  function removeTransition (event) {
+    console.log(event);
+  }
+
+  const keys = document.querySelectorAll('.key');
+  keys.forEach(key => key.addEventListener('transitionend', removeTransition));
 
 </script>
 
