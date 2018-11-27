@@ -58,36 +58,47 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
-  window.addEventListener('keydown', (keyEvent) => {
-    // Queries the document for an audio element with matching data-key attribute, which is being supplied by the event listener call-back function.
-    const audio = document.querySelector(`audio[data-key="${keyEvent.keyCode}"]`);
+  
+    // Function to play audio and apply CSS styling class to a key upon keyPress.
+    playSound = (keyPress) => {
+      // Queries the document for an audio element with matching data-key attribute, which is being supplied by the event listener call-back function.
+      const audio = document.querySelector(`audio[data-key="${keyPress.keyCode}"]`);
+      
+      // Queries the document for an key class element with matching data-key attribute, which is being supplied by the event listener call-back function.
+      const key = document.querySelector(`.key[data-key="${keyPress.keyCode}"]`);
+
+      // If no audio, stop the function from running.
+      if (!audio) return;
+
+      // If audio is found, force the cuttrentTime of the audio back to 0 to allow for repeated, instantaneous playback on keydown.
+      audio.currentTime = 0;
+
+      // Play the audio.
+      audio.play();
+      
+      // Add class to apply CSS transition effects while audio is playing.
+      key.classList.add('playing');
+
+      // Console.log the information to verify and monitor event listening actions.
+      console.log(audio);
+      console.log(key);
+  };
+
+  // Function to handle the removal of the CSS styling class.
+  function removeTransition (keyPress) {
+    // Skip if it's not a transform
+    if (keyPress.propertyName !== 'transform') return;
     
-    // Queries the document for an key class element with matching data-key attribute, which is being supplied by the event listener call-back function.
-    const key = document.querySelector(`.key[data-key="${keyEvent.keyCode}"]`);
+    // Remove the CSS transform effect class from the key element that is calling this function (the key that triggered the transform).
+    this.classList.remove('playing');
+  };
 
-    // If no audio, stop the function from running.
-    if (!audio) return;
-
-    // If audio is found, force the cuttrentTime of the audio back to 0 to allow for repeated, instantaneous playback on keydown.
-    audio.currentTime = 0;
-
-    // Play the audio.
-    audio.play();
-    
-    // Add class to apply CSS transition effects while audio is playing.
-    key.classList.add('playing');
-
-    // Console.log the information to verify and monitor event listening actions.
-    console.log(audio);
-    console.log(key);
-  });
-
-  function removeTransition (event) {
-    console.log(event);
-  }
-
+  // Store all key class into an variable and then apply an event listener to each to call upon the removeTransition function (above) when the 'transform' CSS property has completed.
   const keys = document.querySelectorAll('.key');
   keys.forEach(key => key.addEventListener('transitionend', removeTransition));
+
+  // Event listener for a key press (keydown) then play associated sound, apply CSS transition and removal.
+  window.addEventListener('keydown', playSound);
 
 </script>
 
